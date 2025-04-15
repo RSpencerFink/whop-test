@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
-import { points } from "~/server/db/schema";
+import { wallets } from "~/server/db/schema";
 import { sql } from "drizzle-orm";
 
 export const profileRouter = createTRPCRouter({
@@ -9,14 +9,14 @@ export const profileRouter = createTRPCRouter({
     .input(z.object({ limit: z.number().min(1).max(100).default(100) }))
     .query(async ({ input }) => {
       // fetch highest balance points and associated profile data
-      const leaderboard = await db.query.points.findMany({
+      const leaderboard = await db.query.wallets.findMany({
         limit: input.limit,
         with: {
           profile: true,
         },
-        orderBy: (points, { desc }) => [desc(points.balance)],
+        orderBy: (wallets, { desc }) => [desc(wallets.balance)],
         extras: {
-          rank: sql<number>`dense_rank() over (order by ${points.balance} desc)`.as(
+          rank: sql<number>`dense_rank() over (order by ${wallets.balance} desc)`.as(
             "rank",
           ),
         },

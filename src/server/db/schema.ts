@@ -40,15 +40,15 @@ export const profileSelectSchema = createSelectSchema(profiles);
 export const profileInsertSchema = createInsertSchema(profiles);
 
 export const profileRelations = relations(profiles, ({ one }) => ({
-  points: one(points, {
+  wallets: one(wallets, {
     fields: [profiles.id],
-    references: [points.profileId],
+    references: [wallets.profileId],
   }),
 }));
 
 // Points table
-export const points = createTable(
-  "points",
+export const wallets = createTable(
+  "wallets",
   {
     id: integer().primaryKey().generatedByDefaultAsIdentity(),
     profileId: integer()
@@ -62,12 +62,12 @@ export const points = createTable(
   (t) => [uniqueIndex("profile_index").on(t.profileId)],
 );
 
-export type Points = typeof points.$inferSelect;
-export type NewPoints = typeof points.$inferInsert;
+export type Wallets = typeof wallets.$inferSelect;
+export type NewWallets = typeof wallets.$inferInsert;
 
-export const pointsSelectSchema = createSelectSchema(points);
-export const pointsInsertSchema = createInsertSchema(points);
+export const walletsSelectSchema = createSelectSchema(wallets);
+export const walletsInsertSchema = createInsertSchema(wallets);
 
-export const pointsRelations = relations(points, ({ one }) => ({
+export const walletsRelations = relations(wallets, ({ one }) => ({
   profile: one(profiles),
 }));

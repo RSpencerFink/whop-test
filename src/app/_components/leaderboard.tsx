@@ -8,10 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import type { Points, Profile } from "~/server/db/schema";
+import type { Wallets, Profile } from "~/server/db/schema";
 import { api } from "~/trpc/react";
 
-type LeaderboardItem = Points & { profile: Profile | null; rank: number };
+type LeaderboardItem = Wallets & { profile: Profile | null; rank: number };
 
 export const Leaderboard = () => {
   const { data, isLoading, error } = api.profile.getLeaderboard.useQuery({

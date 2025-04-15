@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { profiles, points } from "./schema";
+import { profiles, wallets } from "./schema";
 import { faker } from "@faker-js/faker";
 import * as dotenv from "dotenv";
 // to run: npx tsx ./src/server/db/seed.ts
@@ -38,7 +38,7 @@ async function main() {
     }
 
     // Insert points for this profile
-    await db.insert(points).values({
+    await db.insert(wallets).values({
       profileId: profile.id,
       balance: faker.number.int({ min: 0, max: 10000 }),
     });
