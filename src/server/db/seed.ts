@@ -3,7 +3,7 @@ import postgres from "postgres";
 import { profiles, points } from "./schema";
 import { faker } from "@faker-js/faker";
 import * as dotenv from "dotenv";
-
+// to run: npx tsx ./src/server/db/seed.ts
 // Load environment variables from .env file
 dotenv.config();
 
