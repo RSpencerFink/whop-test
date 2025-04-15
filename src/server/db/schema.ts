@@ -3,6 +3,7 @@
 
 import { relations, sql } from "drizzle-orm";
 import {
+  uniqueIndex,
   integer,
   pgTableCreator,
   timestamp,
@@ -39,16 +40,23 @@ export const profileSelectSchema = createSelectSchema(profiles);
 export const profileInsertSchema = createInsertSchema(profiles);
 
 export const profileRelations = relations(profiles, ({ one }) => ({
-  points: one(points),
+  points: one(points, {
+    fields: [profiles.id],
+    references: [points.profileId],
+  }),
 }));
 
 // Points table
-export const points = createTable("points", {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  profileId: integer().references(() => profiles.id),
-  balance: integer().default(0),
-  ...timestamps,
-});
+export const points = createTable(
+  "points",
+  {
+    id: integer().primaryKey().generatedByDefaultAsIdentity(),
+    profileId: integer().references(() => profiles.id),
+    balance: integer().default(0),
+    ...timestamps,
+  },
+  (t) => [uniqueIndex("profile_index").on(t.profileId)],
+);
 
 export type Points = typeof points.$inferSelect;
 export type NewPoints = typeof points.$inferInsert;

@@ -1,6 +1,6 @@
 "use client";
 import { TRPCError } from "@trpc/server";
-import type { Profile } from "~/server/db/schema";
+import type { Points, Profile } from "~/server/db/schema";
 import { api } from "~/trpc/react";
 
 export const Leaderboard = () => {
@@ -17,13 +17,18 @@ export const Leaderboard = () => {
 
   return (
     <div>
-      {data?.map((profile: Profile) => (
-        <LeaderboardItem key={profile.id} profile={profile} />
-      ))}
+      {data?.map((item) => {
+        if (!item.profile) return null;
+        return <LeaderboardItem key={item.profile.id} item={item} />;
+      })}
     </div>
   );
 };
 
-const LeaderboardItem = ({ profile }: { profile: Profile }) => {
-  return <div>{profile.id}</div>;
+const LeaderboardItem = ({ item }: { item: Points & { profile: Profile } }) => {
+  return (
+    <div>
+      {item.profile.id} - {item.balance} - {item.rank}
+    </div>
+  );
 };

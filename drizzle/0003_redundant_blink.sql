@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "profile_index" ON "whop-test_points" USING btree ("profileId");
