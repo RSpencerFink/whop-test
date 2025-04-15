@@ -63,7 +63,7 @@ export const wallets = createTable(
         onDelete: "cascade",
       })
       .notNull(),
-    balance: integer().default(0),
+    balance: integer().notNull().default(0),
     ...timestamps,
   },
   (t) => [uniqueIndex("profile_index").on(t.profileId)],

@@ -14,7 +14,7 @@ import { api } from "~/trpc/react";
 type LeaderboardItem = Wallets & { profile: Profile | null; rank: number };
 
 export const Leaderboard = () => {
-  const { data, isLoading, error } = api.profile.getLeaderboard.useQuery({
+  const { data, isLoading, error } = api.leaderboard.getLeaderboard.useQuery({
     limit: 10,
   });
 

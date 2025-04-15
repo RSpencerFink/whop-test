@@ -4,7 +4,7 @@ import { db } from "~/server/db";
 import { wallets } from "~/server/db/schema";
 import { sql } from "drizzle-orm";
 
-export const profileRouter = createTRPCRouter({
+export const leaderboardRouter = createTRPCRouter({
   getLeaderboard: publicProcedure
     .input(z.object({ limit: z.number().min(1).max(100).default(100) }))
     .query(async ({ input }) => {
