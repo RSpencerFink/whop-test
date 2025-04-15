@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   integer,
   pgTableCreator,
@@ -25,6 +25,7 @@ const timestamps = {
   updatedAt: timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
 };
 
+// Profiles table
 export const profiles = createTable("profiles", {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({ length: 256 }),
@@ -36,3 +37,25 @@ export type NewProfile = typeof profiles.$inferInsert;
 
 export const profileSelectSchema = createSelectSchema(profiles);
 export const profileInsertSchema = createInsertSchema(profiles);
+
+export const profileRelations = relations(profiles, ({ one }) => ({
+  points: one(points),
+}));
+
+// Points table
+export const points = createTable("points", {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  profileId: integer().references(() => profiles.id),
+  balance: integer().default(0),
+  ...timestamps,
+});
+
+export type Points = typeof points.$inferSelect;
+export type NewPoints = typeof points.$inferInsert;
+
+export const pointsSelectSchema = createSelectSchema(points);
+export const pointsInsertSchema = createInsertSchema(points);
+
+export const pointsRelations = relations(points, ({ one }) => ({
+  profile: one(profiles),
+}));
