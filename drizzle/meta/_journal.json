@@ -29,6 +29,13 @@
       "when": 1744743182516,
       "tag": "0003_redundant_blink",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1744745136471,
+      "tag": "0004_dusty_the_watchers",
+      "breakpoints": true
     }
   ]
 }

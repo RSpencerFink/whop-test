@@ -1,7 +1,17 @@
 "use client";
 import { TRPCError } from "@trpc/server";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 import type { Points, Profile } from "~/server/db/schema";
 import { api } from "~/trpc/react";
+
+type LeaderboardItem = Points & { profile: Profile | null; rank: number };
 
 export const Leaderboard = () => {
   const { data, isLoading, error } = api.profile.getLeaderboard.useQuery({
@@ -16,19 +26,34 @@ export const Leaderboard = () => {
   if (!data) return <div>No data</div>;
 
   return (
-    <div>
-      {data?.map((item) => {
-        if (!item.profile) return null;
-        return <LeaderboardItem key={item.profile.id} item={item} />;
-      })}
-    </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px] text-white">User ID</TableHead>
+          <TableHead className="text-white">User Name</TableHead>
+          <TableHead className="text-white">Points Balance</TableHead>
+          <TableHead className="text-right text-white">
+            Leaderboard Rank
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {(data ?? []).map((item) => (
+          <LeaderboardItem key={item.profile?.id} item={item} />
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 
-const LeaderboardItem = ({ item }: { item: Points & { profile: Profile } }) => {
+const LeaderboardItem = ({ item }: { item: LeaderboardItem }) => {
+  if (!item.profile) return null;
   return (
-    <div>
-      {item.profile.id} - {item.balance} - {item.rank}
-    </div>
+    <TableRow>
+      <TableCell className="font-medium">{item.profile.id}</TableCell>
+      <TableCell>{item.profile.name}</TableCell>
+      <TableCell>{item.balance}</TableCell>
+      <TableCell className="text-right">{item.rank}</TableCell>
+    </TableRow>
   );
 };

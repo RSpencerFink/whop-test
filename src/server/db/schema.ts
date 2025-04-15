@@ -51,7 +51,11 @@ export const points = createTable(
   "points",
   {
     id: integer().primaryKey().generatedByDefaultAsIdentity(),
-    profileId: integer().references(() => profiles.id),
+    profileId: integer()
+      .references(() => profiles.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
     balance: integer().default(0),
     ...timestamps,
   },
