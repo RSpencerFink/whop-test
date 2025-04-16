@@ -31,7 +31,7 @@ export const Leaderboard = () => {
         <TableRow>
           <TableHead className="w-[100px] text-white">User ID</TableHead>
           <TableHead className="text-white">User Name</TableHead>
-          <TableHead className="text-white">Points Balance</TableHead>
+          <TableHead className="text-white">Wallet Balance</TableHead>
           <TableHead className="text-right text-white">
             Leaderboard Rank
           </TableHead>
@@ -52,7 +52,7 @@ const LeaderboardItem = ({ item }: { item: LeaderboardItem }) => {
     <TableRow>
       <TableCell className="font-medium">{item.profile.id}</TableCell>
       <TableCell>{item.profile.name}</TableCell>
-      <TableCell>{item.balance}</TableCell>
+      <TableCell>${(item.balance / 100).toLocaleString()}</TableCell>
       <TableCell className="text-right">{item.rank}</TableCell>
     </TableRow>
   );
