@@ -1,0 +1,1 @@
+ALTER TABLE "whop-test_wallets" ALTER COLUMN "balance" SET DATA TYPE bigint;

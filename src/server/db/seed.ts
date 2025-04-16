@@ -21,11 +21,12 @@ async function main() {
   const db = drizzle(client);
 
   // Create profiles with points
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 101; i++) {
     // Insert profile
     const result = await db
       .insert(profiles)
       .values({
+        id: i + 1,
         name: faker.person.fullName(),
       })
       .returning();
@@ -40,7 +41,7 @@ async function main() {
     // Insert points for this profile
     await db.insert(wallets).values({
       profileId: profile.id,
-      balance: faker.number.int({ min: 0, max: 10000 }),
+      balance: 0,
     });
   }
 

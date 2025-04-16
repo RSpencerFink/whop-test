@@ -11,6 +11,26 @@ export const transactionRouter = createTRPCRouter({
   createTransaction: publicProcedure
     .input(transactionsInsertSchema.omit({ status: true }))
     .mutation(async ({ ctx, input }) => {
+      if (input.senderId === input.recipientId) {
+        await ctx.db.insert(transactions).values({
+          ...input,
+          status: "failed",
+        });
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Sender and recipient cannot be the same",
+        });
+      }
+      if (input.amount <= 0) {
+        await ctx.db.insert(transactions).values({
+          ...input,
+          status: "failed",
+        });
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Amount must be greater than 0",
+        });
+      }
       const senderWallet = await ctx.db.query.wallets.findFirst({
         where: eq(wallets.profileId, input.senderId),
       });
@@ -48,23 +68,31 @@ export const transactionRouter = createTRPCRouter({
         });
       }
       try {
-        const [transaction, _a, _b] = await Promise.all([
-          ctx.db
+        const transactionResult = await ctx.db.transaction(async (tx) => {
+          // Insert the transaction
+          const [transaction] = await tx
             .insert(transactions)
             .values({ ...input, status: "completed" })
-            .returning(),
-          ctx.db
+            .returning();
+
+          // Update sender wallet
+          await tx
             .update(wallets)
             .set({ balance: senderWallet.balance - input.amount })
-            .where(eq(wallets.profileId, input.senderId)),
-          ctx.db
+            .where(eq(wallets.profileId, input.senderId));
+
+          // Update recipient wallet
+          await tx
             .update(wallets)
             .set({ balance: recipientWallet.balance + input.amount })
-            .where(eq(wallets.profileId, input.recipientId)),
-        ]);
+            .where(eq(wallets.profileId, input.recipientId));
 
-        return transaction;
-      } catch (_error) {
+          return transaction;
+        });
+
+        return transactionResult;
+      } catch (error) {
+        console.error("Transaction error:", error);
         await ctx.db.insert(transactions).values({
           ...input,
           status: "failed",

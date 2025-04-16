@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
   pgEnum,
+  bigint,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -63,7 +64,7 @@ export const wallets = createTable(
         onDelete: "cascade",
       })
       .notNull(),
-    balance: integer().notNull().default(0),
+    balance: bigint({ mode: "number" }).notNull().default(0),
     ...timestamps,
   },
   (t) => [uniqueIndex("profile_index").on(t.profileId)],

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const balance = await caller.wallet.getBalanceForUser({
       userId: parseInt(senderId),
     });
-    return new Response(JSON.stringify(balance), { status: 200 });
+    return new Response(JSON.stringify({ amount: balance }), { status: 200 });
   } catch (error) {
     if (error instanceof TRPCError) {
       return new Response(
